@@ -3,5 +3,6 @@
     <pages>
         <page name='Refactor-MessageSender'/>
         <page name='Not-Good-MessageSender'/>
+        <page name='Complete-MessageSender'/>
     </pages>
 </playground>
