@@ -68,7 +68,11 @@ final class MessageSender<API: MessageSenderAPI, Input: MessageInput> where API.
             }
         }
         mutating func accept(response: API.Response?) {
-            self = .send(response!)
+            guard let response = response else {
+                self = .connectionFailed
+                return
+            }
+            self = .send(response)
         }
     }
 
@@ -102,21 +106,21 @@ final class MessageSender<API: MessageSenderAPI, Input: MessageInput> where API.
 
 protocol Message {}
 
-struct TextMessage: Message {
-    var text: String
-}
-
-struct TextMessageSender: MessageSenderAPI {
-    typealias Payload = String
-    typealias Response = TextMessage
-
-    func send(payload: String, completion: @escaping (TextMessage?) -> Void) {
-        let message = TextMessage(text: "\(payload)を受け取りました")
-        completion(message)
-    }
-}
-
 struct TextSendRepository: MessageSenderDelegate {
+    struct TextMessage: Message {
+        var text: String
+    }
+
+    struct TextMessageSender: MessageSenderAPI {
+        typealias Payload = String
+        typealias Response = TextMessage
+
+        func send(payload: String, completion: @escaping (TextMessage?) -> Void) {
+            let message = TextMessage(text: "\(payload)を受け取りました")
+            completion(message)
+        }
+    }
+
     private var sender: MessageSender<TextMessageSender, TextMessageInput>
 
     init(input payload: String) {
@@ -144,11 +148,16 @@ struct TextSendRepository: MessageSenderDelegate {
     }
 }
 
-// 成功するインプット
+
+// MARK: 実際のユースケース
+
+print("<<成功するインプット>>")
 let successInputRepo = TextSendRepository(input: "テスト")
 successInputRepo.send()
 
-// 失敗するインプット
+print()
+
+print("<<失敗するインプット>>")
 let failedInputRepo = TextSendRepository(input: String(repeating: "A", count: 301))
 failedInputRepo.send()
 
