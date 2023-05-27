@@ -30,8 +30,16 @@ struct ImageMessage: Message {}
 final class CommonMessageAPI {
     func fetchAll(ofUserId: Int, completion: @escaping ([Message]?) -> Void) {}
     func fetch(id: Int, completion: @escaping (Message?) -> Void) {}
-    func sendTextMessage(text: String, completion: @escaping (TextMessage?) -> Void) {}
-    func sendImageMessage(image: UIImage, text: String?, completion: @escaping (ImageMessage?) -> Void) {}
+    func sendTextMessage(text: String, completion: @escaping (TextMessage?) -> Void) {
+        // 送信処理が入
+        print("\(#function) ------ message: \(text)を送信完了しました\n\n")
+        completion(TextMessage())
+    }
+    func sendImageMessage(image: UIImage, text: String?, completion: @escaping (ImageMessage?) -> Void) {
+        // 送信処理が入る
+        print("\(#function) ------ message: \(text ?? "空")\n image: \(image.description)\n を送信完了しました\n\n")
+        completion(ImageMessage())
+    }
 }
 
 final class MessageSender {
@@ -46,11 +54,19 @@ final class MessageSender {
 
     // MARK: 送信するメッセージの入力値
     var text: String? { // TextMessage, ImageMessage どちらの場合も使う
-        didSet { if !isImageValid { delegate?.validではないことを伝える() }}
+        didSet {
+            if !isTextValid {
+                delegate?.validではないことを伝える()
+            }
+        }
     }
 
     var image: UIImage? { // ImageMessageの場合に使う
-        didSet { if !isImageValid { delegate?.validではないことを伝える() }}
+        didSet {
+            if !isImageValid {
+                delegate?.validではないことを伝える()
+            }
+        }
     }
 
     // MARK: 通信結果
@@ -108,3 +124,33 @@ final class MessageSender {
         }
     }
 }
+
+class MessageSenderRepository: MessageSenderDelegate {
+    func send(messageType: MessageType, message: String?, image: UIImage?) {
+        let sender = MessageSender(messageType: messageType)
+        sender.delegate = self
+        switch messageType {
+        case .text:
+            sender.text = message
+        case .image:
+            sender.text = message
+            sender.image = image
+        case .official:
+            fatalError("officialメッセージは送信できません")
+        }
+        sender.send()
+    }
+
+    func validではないことを伝える() {
+        print("有効でない情報が含まれるために送信できませんでした")
+    }
+
+    func 通信完了を伝える() {
+        print("通信完了しました")
+    }
+}
+
+let senderRepository = MessageSenderRepository()
+senderRepository.send(messageType: .text, message: "text送信処理のテスト", image: nil)
+print("---------------------")
+senderRepository.send(messageType: .image, message: "image送信処理のテスト", image: UIImage(systemName: "pencil"))
