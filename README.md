@@ -1,9 +1,10 @@
 # iOS-Architecture-Swift-Like
 Swiftを使用したiOSアーキテクチャについて学ぶ
 
-対象の書籍を整理し、省略された処理セクションを補完することで、対象の内容をより理解しやすくするために作成しました 💁
+題材となるコードをこちらに置いています
 
-
+iOSアプリ設計における有名な書籍の内容を引用し、省略された処理セクションを補完しながら、内容をより理解するために作成しました 💁
+（あくまで単に個人の勉強の延長であることにご留意ください 🙏）
 
 <img src="https://gyazo.com/975cd75eeeef6e6db99c81f49c091e13.png" width="480">
 
@@ -34,7 +35,10 @@ SOLID原則は、ソフトウェア開発においてモジュラーで保守可
 
 Study about ios architecture with swift like
 
-Created to organize the target book and to fill in the omitted processing sections for a better understanding of the subject.
+I have placed the code for the subject matter here.
+
+I created this to better understand the content by quoting from famous books on iOS app design and filling in the omitted processing sections. 💁
+(Please note that this is simply an extension of personal study. 🙏)
 
 ## Study about principle
 
